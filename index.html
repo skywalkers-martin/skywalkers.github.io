@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>网页已停止访问</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.5;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px 20px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        
+        .warning-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 20px;
+            background-color: #ff4d4f;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+        }
+        
+        h1 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .url {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            word-break: break-all;
+            padding: 0 10px;
+        }
+        
+        .message {
+            font-size: 15px;
+            color: #ff4d4f;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            padding: 0 10px;
+        }
+        
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            display: block;
+            padding: 12px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        
+        .btn-primary {
+            background-color: #07C160;
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:active {
+            background-color: #06ae56;
+        }
+        
+        .btn-default {
+            background-color: white;
+            color: #666;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .btn-default:active {
+            background-color: #f7f7f7;
+        }
+        
+        .footer {
+            color: #999;
+            font-size: 12px;
+            margin-top: 20px;
+        }
+        
+        /* 微信浏览器优化 */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            
+            .container {
+                padding: 25px 15px;
+            }
+            
+            .warning-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 30px;
+            }
+            
+            h1 {
+                font-size: 17px;
+            }
+            
+            .message {
+                font-size: 14px;
+            }
+            
+            .btn {
+                font-size: 15px;
+                padding: 11px 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="warning-icon">!</div>
+        <h1>已停止访问该网页</h1>
+        <div class="url">www.zzljdl.cn</div>
+        <div class="message">
+            经网址安全检测，该网页包含违法或违规内容。为维护绿色上网环境，已停止访问。
+        </div>
+        <div class="actions">
+            <a href="#" class="btn btn-primary">申请恢复访问</a>
+            <a href="#" class="btn btn-default">客服指引</a>
+            <a href="#" class="btn btn-default">查看规则</a>
+        </div>
+        <div class="footer">
+            如需帮助，请联系网站管理员或相关服务提供商
+        </div>
+    </div>
+
+    <script>
+        // 微信浏览器优化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 阻止双击缩放
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function(event) {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
+            
+            // 阻止手势缩放
+            document.addEventListener('gesturestart', function(event) {
+                event.preventDefault();
+            });
+            
+            // 按钮点击效果
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.98)';
+                });
+                
+                button.addEventListener('touchend', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
