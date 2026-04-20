@@ -1,198 +1,469 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>网页已停止访问</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.5;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        
-        .container {
-            background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 30px 20px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-        }
-        
-        .warning-icon {
-            width: 70px;
-            height: 70px;
-            margin: 0 auto 20px;
-            background-color: #ff4d4f;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 36px;
-            font-weight: bold;
-        }
-        
-        h1 {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #333;
-        }
-        
-        .url {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
-            word-break: break-all;
-            padding: 0 10px;
-        }
-        
-        .message {
-            font-size: 15px;
-            color: #ff4d4f;
-            margin-bottom: 30px;
-            line-height: 1.6;
-            padding: 0 10px;
-        }
-        
-        .actions {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .btn {
-            display: block;
-            padding: 12px 20px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 16px;
-            transition: all 0.2s;
-            font-weight: 500;
-        }
-        
-        .btn-primary {
-            background-color: #07C160;
-            color: white;
-            border: none;
-        }
-        
-        .btn-primary:active {
-            background-color: #06ae56;
-        }
-        
-        .btn-default {
-            background-color: white;
-            color: #666;
-            border: 1px solid #e0e0e0;
-        }
-        
-        .btn-default:active {
-            background-color: #f7f7f7;
-        }
-        
-        .footer {
-            color: #999;
-            font-size: 12px;
-            margin-top: 20px;
-        }
-        
-        /* 微信浏览器优化 */
-        @media (max-width: 480px) {
-            body {
-                padding: 15px;
-            }
-            
-            .container {
-                padding: 25px 15px;
-            }
-            
-            .warning-icon {
-                width: 60px;
-                height: 60px;
-                font-size: 30px;
-            }
-            
-            h1 {
-                font-size: 17px;
-            }
-            
-            .message {
-                font-size: 14px;
-            }
-            
-            .btn {
-                font-size: 15px;
-                padding: 11px 18px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STS Token Generator</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; padding: 24px; }
+  .container { max-width: 720px; margin: 0 auto; }
+
+  .card { background: #1e293b; border-radius: 12px; padding: 24px; margin-bottom: 20px; border: 1px solid #334155; }
+  .card h2 { font-size: 16px; color: #94a3b8; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .card h2 .icon { font-size: 18px; }
+
+  .form-group { margin-bottom: 14px; }
+  .form-row { display: flex; gap: 12px; }
+  .form-row .form-group { flex: 1; }
+
+  label { display: block; font-size: 12px; color: #64748b; margin-bottom: 4px; }
+  input, select {
+    width: 100%; padding: 8px 12px; background: #0f172a; border: 1px solid #334155;
+    border-radius: 8px; color: #e2e8f0; font-size: 14px; outline: none;
+  }
+  input:focus, select:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
+  input::placeholder { color: #475569; }
+  input[readonly] { background: #1e293b; color: #94a3b8; }
+
+  .btn-row { display: flex; gap: 10px; margin-top: 16px; }
+  .btn {
+    flex: 1; padding: 10px; border: none; border-radius: 8px; font-size: 14px;
+    font-weight: 600; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-primary { background: #3b82f6; color: #fff; }
+  .btn-primary:hover { background: #2563eb; }
+  .btn-primary:disabled { background: #1e3a5f; color: #64748b; cursor: not-allowed; }
+  .btn-secondary { background: #334155; color: #e2e8f0; }
+  .btn-secondary:hover { background: #475569; }
+  .btn-success { background: #10b981; color: #fff; }
+
+  .result-box { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 14px; margin-top: 12px; }
+  .result-token { font-size: 20px; font-weight: 700; color: #34d399; letter-spacing: 2px; word-break: break-all; text-align: center; padding: 12px 0; }
+  .result-meta { font-size: 12px; color: #64748b; margin-top: 8px; }
+  .result-error { color: #f87171; text-align: center; padding: 12px 0; }
+
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #334155; border-top-color: #3b82f6; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: #334155; color: #e2e8f0; padding: 10px 20px; border-radius: 8px;
+    font-size: 14px; z-index: 999; opacity: 0; transition: opacity 0.3s;
+  }
+  .toast.show { opacity: 1; }
+
+  .param-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .param-grid .form-group { margin-bottom: 0; }
+
+  .history-item { background: #0f172a; border-radius: 8px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+  .history-token { font-size: 14px; color: #34d399; font-family: monospace; }
+
+  .api-mode-info { font-size: 11px; color: #64748b; margin-top: 6px; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="warning-icon">!</div>
-        <h1>已停止访问该网页</h1>
-        <div class="url">www.zzljdl.cn</div>
-        <div class="message">
-            经网址安全检测，该网页包含违法或违规内容。为维护绿色上网环境，已停止访问。
+<div class="container">
+
+  <!-- Login Card -->
+  <div class="card" id="loginCard">
+    <h2><span class="icon">🔐</span> Login</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>API Address</label>
+        <input type="text" id="apiBaseUrl" value="" placeholder="Leave empty for local proxy">
+        <div class="api-mode-info">Cloudflare Pages: enter your Worker/CF Tunnel URL</div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="username" value="admin">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" value="admin123">
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="login()">Login</button>
+    </div>
+  </div>
+
+  <!-- Main Panel -->
+  <div id="mainPanel" style="display:none">
+
+    <!-- Token Generator -->
+    <div class="card">
+      <h2><span class="icon">⚡</span> Token Generator</h2>
+
+      <!-- Paste Area -->
+      <div class="form-group">
+        <label>📋 Paste & Parse Parameters</label>
+        <textarea id="pasteArea" rows="5" placeholder="804=011010063598
+805=999910
+873=03
+002=1
+809=01
+889=18
+69=0"
+          style="width:100%; resize:vertical; font-size:13px; font-family:monospace; line-height:1.6; box-sizing:border-box;"></textarea>
+      </div>
+      <div class="btn-row" style="margin-top:10px; margin-bottom:16px">
+        <button class="btn btn-success" onclick="parsePaste()">📥 Parse</button>
+        <button class="btn btn-secondary" onclick="clearForm()">🗑️ Clear</button>
+      </div>
+
+      <!-- Meter + Token Type + Manufacturer -->
+      <div class="form-row">
+        <div class="form-group" style="flex:2">
+          <label>Meter No (804)</label>
+          <input type="text" id="meterNo" placeholder="011010063598">
         </div>
-        <div class="actions">
-            <a href="#" class="btn btn-primary">申请恢复访问</a>
-            <a href="#" class="btn btn-default">客服指引</a>
-            <a href="#" class="btn btn-default">查看规则</a>
+        <div class="form-group" style="flex:1">
+          <label>Token Type</label>
+          <select id="tokenType">
+            <option value="clear-event-c">Clear Event C</option>
+            <option value="clear-event-p">Clear Event P</option>
+            <option value="clear-event-r">Clear Event R</option>
+            <option value="credit">Credit</option>
+            <option value="clear-balance">Clear Balance</option>
+            <option value="key-change">Key Change</option>
+            <option value="tariff-single">Tariff Single</option>
+          </select>
         </div>
-        <div class="footer">
-            如需帮助，请联系网站管理员或相关服务提供商
+        <div class="form-group" style="flex:1">
+          <label>Manufacturer</label>
+          <input type="text" id="manufacturer" placeholder="Auto" readonly>
         </div>
+      </div>
+
+      <!-- Parameters Grid -->
+      <div class="param-grid">
+        <div class="form-group">
+          <label>SGC (805)</label>
+          <input type="text" id="sgc" placeholder="999910">
+        </div>
+        <div class="form-group">
+          <label>Key Ver (873)</label>
+          <input type="text" id="keyVersion" placeholder="03">
+        </div>
+        <div class="form-group">
+          <label>Key No (002)</label>
+          <input type="text" id="keyNo" placeholder="1">
+        </div>
+        <div class="form-group">
+          <label>Key Exp (003)</label>
+          <input type="text" id="keyExpiredTime" value="255" placeholder="255">
+        </div>
+        <div class="form-group">
+          <label>Tariff Idx (809)</label>
+          <input type="text" id="tariffIndex" placeholder="01">
+        </div>
+        <div class="form-group">
+          <label>Seq No (889)</label>
+          <input type="text" id="seqNo" placeholder="18">
+        </div>
+        <div class="form-group">
+          <label>XjSeqNo (69)</label>
+          <input type="text" id="xjseqno" placeholder="0">
+        </div>
+        <div class="form-group" id="amountGroup">
+          <label>Amount</label>
+          <input type="text" id="amount" placeholder="100">
+        </div>
+      </div>
+
+      <!-- Key Change Extra -->
+      <div id="keyChangeExtra" style="display:none; margin-top:12px;">
+        <div class="form-group">
+          <label>New Key (32 hex)</label>
+          <input type="text" id="newKey" placeholder="0123456789ABCDEF0123456789ABCDEF">
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div class="result-box" id="resultBox" style="display:none">
+        <div style="font-size:12px; color:#64748b; margin-bottom:6px;">
+          Meter: <span id="resultMeterNo" style="color:#94a3b8;"></span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div id="resultToken" style="flex:1; text-align:left; font-size:20px; font-weight:700; color:#34d399; letter-spacing:2px; word-break:break-all;"></div>
+          <button class="btn btn-secondary" onclick="copyResult()" style="flex:0; padding:8px 12px;">📋 Copy</button>
+        </div>
+        <div id="resultMeta" style="font-size:12px; color:#64748b; margin-top:8px;"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="genBtn" onclick="generateToken()">Generate Token</button>
+      </div>
     </div>
 
-    <script>
-        // 微信浏览器优化
-        document.addEventListener('DOMContentLoaded', function() {
-            // 阻止双击缩放
-            let lastTouchEnd = 0;
-            document.addEventListener('touchend', function(event) {
-                const now = (new Date()).getTime();
-                if (now - lastTouchEnd <= 300) {
-                    event.preventDefault();
-                }
-                lastTouchEnd = now;
-            }, false);
-            
-            // 阻止手势缩放
-            document.addEventListener('gesturestart', function(event) {
-                event.preventDefault();
-            });
-            
-            // 按钮点击效果
-            const buttons = document.querySelectorAll('.btn');
-            buttons.forEach(button => {
-                button.addEventListener('touchstart', function() {
-                    this.style.transform = 'scale(0.98)';
-                });
-                
-                button.addEventListener('touchend', function() {
-                    this.style.transform = 'scale(1)';
-                });
-            });
-        });
-    </script>
+    <!-- History -->
+    <div class="card">
+      <h2><span class="icon">📜</span> History</h2>
+      <div id="historyList"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let token = localStorage.getItem('sts_token') || '';
+let apiBaseUrl = '';
+let history = JSON.parse(localStorage.getItem('sts_history') || '[]');
+
+const MANUFACTURERS = {
+  'Capital':  { key: '7777777777777777', prefixes: ['030719','030749','150750','150760','01101','02641'] },
+  'CELL':     { key: '3333333333333333', prefixes: ['01051'] },
+  'JFJ':      { key: '5555555555555555', prefixes: ['01061','026210','030819','150550'] },
+  'Rising':   { key: '6666666666666666', prefixes: ['01071'] },
+  'KEMCO':    { key: '9999999999999999', prefixes: ['01131'] },
+  'CGS':      { key: 'BBBBBBBBBBBBBBBB', prefixes: ['01141'] },
+  'Modern':   { key: 'AAAAAAAAAAAAAAAA', prefixes: ['01191'] },
+  'CITIZEN':  { key: 'CCCCCCCCCCCCCCCC', prefixes: [] },
+  'MSG':      { key: 'DDDDDDDDDDDDDDDD', prefixes: [] },
+  'MEC':      { key: 'EEEEEEEEEEEEEEEE', prefixes: ['031419'] },
+};
+
+(function init() {
+  if (token) { showMainPanel(); }
+  renderHistory();
+  document.getElementById('tokenType').value = 'clear-event-c';
+  document.getElementById('meterNo').addEventListener('input', autoMatchManufacturer);
+  document.getElementById('tokenType').addEventListener('change', toggleTokenTypeFields);
+  toggleTokenTypeFields();
+  document.getElementById('apiBaseUrl').value = localStorage.getItem('sts_api_url') || '';
+  apiBaseUrl = localStorage.getItem('sts_api_url') || '';
+})();
+
+async function login() {
+  const user = document.getElementById('username').value.trim();
+  const pass = document.getElementById('password').value;
+  apiBaseUrl = document.getElementById('apiBaseUrl').value.trim();
+
+  if (!user || !pass) { toast('Please enter username and password'); return; }
+
+  const btn = event.target;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Logging in...';
+
+  try {
+    const res = await fetch(`${apiBaseUrl}/api/Auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: user, password: pass })
+    });
+    const data = await res.json();
+    if (data.token) {
+      token = data.token;
+      localStorage.setItem('sts_token', token);
+      localStorage.setItem('sts_api_url', apiBaseUrl);
+      showMainPanel();
+    } else {
+      toast('Login failed: ' + (data.error || 'Unknown error'));
+    }
+  } catch (e) {
+    toast('Connection failed: ' + e.message);
+  }
+  btn.disabled = false;
+  btn.innerHTML = 'Login';
+}
+
+function logout() {
+  token = '';
+  localStorage.removeItem('sts_token');
+  document.getElementById('loginCard').style.display = 'block';
+  document.getElementById('mainPanel').style.display = 'none';
+  document.getElementById('apiBaseUrl').value = localStorage.getItem('sts_api_url') || '';
+}
+
+function showMainPanel() {
+  document.getElementById('loginCard').style.display = 'none';
+  document.getElementById('mainPanel').style.display = 'block';
+}
+
+function autoMatchManufacturer() {
+  const meterNo = document.getElementById('meterNo').value.trim();
+  const prefix = meterNo.substring(0, 6);
+  for (const [name, cfg] of Object.entries(MANUFACTURERS)) {
+    if (cfg.prefixes.some(p => meterNo.startsWith(p))) {
+      document.getElementById('manufacturer').value = name;
+      return;
+    }
+  }
+  document.getElementById('manufacturer').value = '';
+}
+
+function toggleTokenTypeFields() {
+  const type = document.getElementById('tokenType').value;
+  const amountGroup = document.getElementById('amountGroup');
+  const keyChangeExtra = document.getElementById('keyChangeExtra');
+  amountGroup.style.display = (type === 'credit' || type === 'clear-balance') ? 'block' : 'none';
+  keyChangeExtra.style.display = (type === 'key-change') ? 'block' : 'none';
+  document.getElementById('amount').value = '';
+}
+
+function parsePaste() {
+  const text = document.getElementById('pasteArea').value;
+  const lines = text.split('\n');
+  const fields = {
+    '804': 'meterNo', '805': 'sgc', '873': 'keyVersion', '002': 'keyNo',
+    '003': 'keyExpiredTime', '809': 'tariffIndex', '889': 'seqNo', '69': 'xjseqno'
+  };
+  lines.forEach(line => {
+    const [key, ...valParts] = line.split('=');
+    if (!key || valParts.length === 0) return;
+    const value = valParts.join('=').trim();
+    const id = fields[key.trim()];
+    if (id) document.getElementById(id).value = value;
+  });
+  autoMatchManufacturer();
+  toast('Parsed');
+}
+
+function clearForm() {
+  ['meterNo','sgc','keyVersion','keyNo','keyExpiredTime','tariffIndex','seqNo','xjseqno','amount','newKey'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('pasteArea').value = '';
+  document.getElementById('manufacturer').value = '';
+  document.getElementById('resultBox').style.display = 'none';
+  toggleTokenTypeFields();
+}
+
+function getField(id, def) {
+  const v = document.getElementById(id).value.trim();
+  return v === '' ? def : v;
+}
+
+async function generateToken() {
+  const type = document.getElementById('tokenType').value;
+  const meterNo = document.getElementById('meterNo').value.trim();
+  const manufacturer = document.getElementById('manufacturer').value.trim();
+  const mfgKey = MANUFACTURERS[manufacturer]?.key || '7777777777777777';
+
+  const body = {
+    meterNo,
+    sgc: getField('sgc'),
+    keyVersion: getField('keyVersion'),
+    keyNo: getField('keyNo'),
+    keyExpiredTime: getField('keyExpiredTime', '255'),
+    tariffIndex: getField('tariffIndex'),
+    seqNo: parseInt(getField('seqNo')) || 1,
+    xjseqno: parseInt(getField('xjseqno')) || 0,
+    key: mfgKey
+  };
+
+  if (type === 'credit' || type === 'clear-balance') {
+    body.amount = parseFloat(getField('amount')) || 0;
+  }
+  if (type === 'key-change') {
+    body.newKey = document.getElementById('newKey').value;
+  }
+
+  const endpoint = {
+    'credit': '/api/Token/credit',
+    'clear-event-c': '/api/Token/clear-event-c',
+    'clear-event-r': '/api/Token/clear-event-r',
+    'clear-event-p': '/api/Token/clear-event-p',
+    'clear-balance': '/api/Token/clear-balance',
+    'key-change': '/api/Token/key-change',
+    'tariff-single': '/api/Token/tariff-single',
+    'tariff-multi': '/api/Token/tariff-multi',
+    'set-datetime': '/api/Token/set-datetime',
+    'bypass-mode': '/api/Token/bypass-mode',
+    'relay-test': '/api/Token/relay-test',
+  }[type];
+
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Generating...';
+
+  try {
+    const res = await fetch(`${apiBaseUrl}${endpoint}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify(body)
+    });
+
+    if (res.status === 401) {
+      toast('Auth expired, please login again');
+      logout();
+      btn.disabled = false;
+      btn.innerHTML = 'Generate Token';
+      return;
+    }
+
+    const data = await res.json();
+    const resultBox = document.getElementById('resultBox');
+    const resultToken = document.getElementById('resultToken');
+    const resultMeta = document.getElementById('resultMeta');
+
+    resultBox.style.display = 'block';
+
+    if (data.success && data.token) {
+      resultToken.textContent = data.token;
+      resultMeta.textContent = `Type: ${type} | Meter: ${meterNo} | Time: ${new Date().toLocaleTimeString()}`;
+      addHistory(meterNo, data.token, type);
+    } else {
+      resultToken.textContent = 'Error';
+      resultMeta.textContent = data.error || 'Unknown error';
+    }
+  } catch (e) {
+    document.getElementById('resultBox').style.display = 'block';
+    document.getElementById('resultToken').textContent = 'Error';
+    document.getElementById('resultMeta').textContent = e.message;
+  }
+  btn.disabled = false;
+  btn.innerHTML = 'Generate Token';
+}
+
+function addHistory(meterNo, tokenVal, type) {
+  history.unshift({ meterNo, token: tokenVal, type, time: new Date().toISOString() });
+  history = history.slice(0, 20);
+  localStorage.setItem('sts_history', JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory() {
+  const list = document.getElementById('historyList');
+  if (history.length === 0) {
+    list.innerHTML = '<div style="color:#475569; text-align:center; padding:20px;">No history</div>';
+    return;
+  }
+  list.innerHTML = history.map((h, i) => `
+    <div class="history-item">
+      <div>
+        <div style="font-size:12px; color:#64748b;">${h.meterNo} (${h.type})</div>
+        <div class="history-token">${h.token}</div>
+      </div>
+      <button class="btn btn-secondary" style="flex:0; padding:6px 10px;" onclick="copyHistory(${i})">📋</button>
+    </div>
+  `).join('');
+}
+
+function copyHistory(i) {
+  const h = history[i];
+  navigator.clipboard.writeText(`${h.meterNo} ${h.token}`).then(() => toast('Copied')).catch(() => toast('Copy failed'));
+}
+
+function copyResult() {
+  const tokenVal = document.getElementById('resultToken').textContent;
+  const meterNo = document.getElementById('resultMeterNo').textContent;
+  if (!tokenVal || tokenVal === 'Error') return;
+  navigator.clipboard.writeText(`${meterNo} ${tokenVal}`).then(() => toast('Copied')).catch(() => toast('Copy failed'));
+}
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2000);
+}
+</script>
 </body>
 </html>
